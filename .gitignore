@@ -1,0 +1,7 @@
+/school-hibernate-cli-application/target/
+/school-hibernate-cli-application/.mvn/
+*.prefs
+/school-hibernate-cli-application/.classpath
+/school-hibernate-cli-application/.project
+/school-hibernate-cli-application/.settings/
+/school-hibernate-cli-application/schoolapp.log

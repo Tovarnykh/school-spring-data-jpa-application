@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.CourseDao;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.Course;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.Student;
-import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.StudentCourse;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.domain.generator.Generator;
+import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.domain.pojo.StudentCourse;
 
 @Service
 public class StudentCourseService {

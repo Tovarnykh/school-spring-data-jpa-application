@@ -26,7 +26,7 @@ public class StudentRepository implements StudentDao {
     private static final String PROPERTY_STUDENT_GET_ALL_EAGER = """
             SELECT s
             FROM Student s
-            JOIN FETCH s.courses
+            LEFT OUTER JOIN FETCH s.courses
             """;
 
     @PersistenceContext

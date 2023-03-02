@@ -29,8 +29,8 @@ public class StudentMenuItem extends MenuItem implements Item {
             ║                                         ║
             ╚═════════════════════════════════════════╝
             """;
-    private static final String STUDENT_FORMAT = " %6s | %-10s | %-10s %n";
-    private static final String STUDENT_OUT_FORMAT = " %6d | %-10s | %-10s %n";
+    private static final String STUDENT_FORMAT = " %-3s | %-6s | %-9s | %-6s %n";
+    private static final String STUDENT_OUT_FORMAT = " %-3s | %-7s | %-9s | %-6s %n";
 
     private StudentService studentService;
     private final String itemName;
@@ -71,10 +71,14 @@ public class StudentMenuItem extends MenuItem implements Item {
         int studentId = readNumber();
         Student student = studentService.get(studentId);
 
-        System.out.printf(STUDENT_FORMAT, "id", "Name", "Second Name");
+        System.out.printf(STUDENT_FORMAT, "Id", "GroupId", "Name", "Second Name");
         System.out.println(DELIMITER);
-        if (student.getId() != 0) {
-            System.out.printf(STUDENT_OUT_FORMAT, student.getGroup().getId(), student.getFirstName(), student.getLastName());
+        if (student.getGroup() != null) {
+            System.out.printf(STUDENT_OUT_FORMAT, student.getId(), student.getGroup().getId(), student.getFirstName(),
+                    student.getLastName());
+        } else {
+            System.out.printf(STUDENT_OUT_FORMAT, student.getId(), "N/A", student.getFirstName(),
+                    student.getLastName());
         }
         closeSection();
     }
@@ -85,15 +89,20 @@ public class StudentMenuItem extends MenuItem implements Item {
                 ║                Students                ║
                 ╟────────────────────────────────────────╢
                  """);
-        System.out.printf(STUDENT_FORMAT, "id", "Name", "Second Name");
+        System.out.printf(STUDENT_FORMAT, "Id", "Group Id", "Name", "Second Name");
         System.out.println(DELIMITER);
 
         List<Student> students = studentService.getAll();
 
-        students.forEach(student -> System.out.printf(STUDENT_OUT_FORMAT,
-                student.getId(), 
-                student.getFirstName(),
-                student.getLastName()));
+        students.forEach(student -> {
+            if (student.getGroup() != null) {
+                System.out.printf(STUDENT_OUT_FORMAT, student.getId(), student.getGroup().getId(),
+                        student.getFirstName(), student.getLastName());
+            } else {
+                System.out.printf(STUDENT_OUT_FORMAT, student.getId(), "N/A", student.getFirstName(),
+                        student.getLastName());
+            }
+        });
         closeSection();
     }
 

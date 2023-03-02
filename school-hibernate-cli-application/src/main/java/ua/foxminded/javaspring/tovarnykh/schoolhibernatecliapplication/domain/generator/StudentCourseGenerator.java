@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
-import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.StudentCourse;
+import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.domain.pojo.StudentCourse;
 
 @Component
 public class StudentCourseGenerator implements Generator<StudentCourse> {

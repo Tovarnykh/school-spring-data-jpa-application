@@ -1,4 +1,4 @@
-package ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity;
+package ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.domain.pojo;
 
 import java.util.Objects;
 

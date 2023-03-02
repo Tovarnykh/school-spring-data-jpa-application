@@ -14,5 +14,5 @@ public class SchoolHibernateCliApplication {
         Menu menu = applicationContext.getBean(Menu.class);
         menu.initMenu();
     }
-
+    
 }

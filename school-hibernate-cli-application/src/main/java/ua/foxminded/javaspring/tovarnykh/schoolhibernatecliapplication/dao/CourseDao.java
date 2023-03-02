@@ -6,7 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.Course;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.Student;
-import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.StudentCourse;
+import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.domain.pojo.StudentCourse;
 
 public interface CourseDao extends Dao<Course> {
 

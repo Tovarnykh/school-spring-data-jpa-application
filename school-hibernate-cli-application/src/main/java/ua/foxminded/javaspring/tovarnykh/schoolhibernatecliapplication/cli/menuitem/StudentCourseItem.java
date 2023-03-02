@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.cli.CommandLineInterface;
-import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.StudentCourse;
+import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.domain.pojo.StudentCourse;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.domain.service.StudentCourseService;
 
 @Component

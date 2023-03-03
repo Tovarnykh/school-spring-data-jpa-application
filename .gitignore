@@ -1,7 +1,8 @@
-/school-hibernate-cli-application/target/
-/school-hibernate-cli-application/.mvn/
+/school-spring-data-jpa-cli-application/target/
+/school-spring-data-jpa-cli-application/.mvn/
 *.prefs
-/school-hibernate-cli-application/.classpath
-/school-hibernate-cli-application/.project
-/school-hibernate-cli-application/.settings/
-/school-hibernate-cli-application/schoolapp.log
+/school-spring-data-jpa-cli-application/.classpath
+/school-spring-data-jpa-cli-application/.project
+/school-spring-data-jpa-cli-application/.settings/
+/school-spring-data-jpa-cli-application/schoolapp.log
+

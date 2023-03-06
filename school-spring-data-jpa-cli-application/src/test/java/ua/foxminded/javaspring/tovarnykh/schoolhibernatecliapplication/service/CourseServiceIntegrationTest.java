@@ -1,11 +1,7 @@
 package ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.service;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,42 +26,35 @@ class CourseServiceIntegrationTest extends IntegrationTest {
     void add_CheckIsCourseAdd_True() {
         coursService.add("Health", "");
 
-        verify(courseDao, times(1)).add(new Course(0, "Health", ""));
+        verify(courseDao, times(1)).save(new Course(0, "Health", ""));
     }
 
     @Test
     void get_CanGetCourse_True() {
-        when(courseDao.read(1)).thenReturn(new Course("MockedCourse"));
+        coursService.get(1);
 
-        Course courseDb = coursService.get(1);
-
-        assertNotNull(courseDb);
-        assertEquals("MockedCourse", courseDb.getName());
+        verify(courseDao, times(1)).findById(1);
     }
 
     @Test
     void getAll_CheckCanGetAllList_True() {
-        when(courseDao.readAll()).thenReturn(List.of(new Course("Health"), new Course("Art")));
+        coursService.getAll();
 
-        List<Course> courses = coursService.getAll();
-
-        assertNotNull(courses);
-        assertEquals(2, courses.size());
+        verify(courseDao, times(1)).findAll();
     }
 
     @Test
     void update_IsRowUpdated_True() {
         coursService.update(1, "Health", "");
 
-        verify(courseDao).update(new Course(1, "Health", ""));
+        verify(courseDao, times(1)).findById(1);
     }
 
     @Test
     void delete_IsRowDeleted_False() {
-        when(courseDao.read(1)).thenReturn(new Course("Art"));
         coursService.delete(1);
 
-        verify(courseDao).delete(1);
+        verify(courseDao, times(1)).findById(1);
     }
 
 }

@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.CourseDao;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.Course;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.domain.generator.Generator;
@@ -23,7 +24,8 @@ public class CourseService {
         this.courseDao = courseDao;
         this.generator = generator;
     }
-
+    
+    @Transactional
     public void generateData() {
         List<Course> courses = generator.generate();
         courseDao.saveAll(courses);

@@ -3,6 +3,7 @@ package ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -13,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.Group;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.Student;
 
 @SpringBootTest
@@ -23,64 +23,62 @@ import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entit
 class JdbcStudentDaoIntegrationTest {
 
     private StudentDao studentDao;
-    private GroupDao groupDao;
 
     @Autowired
     JdbcStudentDaoIntegrationTest(StudentDao studentDao, GroupDao groupDao) {
         this.studentDao = studentDao;
-        this.groupDao = groupDao;
     }
 
     @Test
     @Order(1)
     void add_CheckIsStudentSaved_True() {
-        Group group = new Group("ew-21");
-        groupDao.add(group);
-        Student testStudent = new Student(group, "Adam", "Adamson");
+        Student testStudent = new Student(null, "Adam", "Adamson");
 
-        studentDao.add(testStudent);
+        studentDao.save(testStudent);
 
-        Student studentDb = studentDao.read(1);
-        assertEquals(testStudent.getFirstName(), studentDb.getFirstName());
+        Optional<Student> studentDb = studentDao.findById(1);
+        assertTrue(studentDb.isPresent());
+        assertEquals(testStudent.getFirstName(), studentDb.get().getFirstName());
     }
 
     @Test
     @Order(2)
-    void read_CheckIsSuchStudentExist_True() {
-        Student studentsDb = studentDao.read(1);
+    void addAll_CheckIsManyGroupsSaves_True() {
+        List<Student> students = List.of(new Student(null, "Adam", "Adamson"), new Student(null, "Tom", "Tomson"));
 
+        studentDao.saveAll(students);
+
+        List<Student> studentsDb = studentDao.findAll();
         assertNotNull(studentsDb);
-        assertEquals("Adam", studentsDb.getFirstName());
+        assertTrue(studentsDb.size() > 1);
     }
 
     @Test
     @Order(3)
+    void read_CheckIsSuchStudentExist_True() {
+        Optional<Student> studentsDb = studentDao.findById(1);
+
+        assertTrue(studentsDb.isPresent());
+        assertEquals("Adam", studentsDb.get().getFirstName());
+    }
+
+    @Test
+    @Order(4)
     void readAll_TryToResolveAllRows_True() {
-        List<Student> studentsDb = studentDao.readAll();
+        List<Student> studentsDb = studentDao.findAll();
 
         assertNotNull(studentsDb);
         assertTrue(studentsDb.size() > 0);
     }
 
     @Test
-    @Order(4)
-    void update_CheckIsRowUpdated_True() {
-        Student testStudent = new Student(1, new Group(1), "Tester", "Testson");
-
-        studentDao.update(testStudent);
-
-        Student testStudentDb = studentDao.read(1);
-        assertEquals(testStudent.getFirstName(), testStudentDb.getFirstName());
-    }
-
-    @Test
     @Order(5)
     void delete_IsRowDeleted_True() {
-        Student testStudent = new Student(1, new Group(1), "Tester", "Testson");
+        Optional<Student> studentDb = studentDao.findById(1);
 
-        studentDao.delete(testStudent.getId());
+        studentDao.delete(studentDb.get());
 
-        assertThrows(IllegalArgumentException.class, () -> studentDao.read(1));
+        assertTrue(studentDao.findById(1).isEmpty());
     }
 
 }

@@ -33,7 +33,7 @@ public class StudentService {
     @Transactional
     public void generateData() {
         List<Student> students = generator.generate();
-        studentDao.saveAll(students);
+        students.forEach(student -> add(student.getGroup().getId(), student.getFirstName(), student.getLastName()));
     }
 
     @Transactional

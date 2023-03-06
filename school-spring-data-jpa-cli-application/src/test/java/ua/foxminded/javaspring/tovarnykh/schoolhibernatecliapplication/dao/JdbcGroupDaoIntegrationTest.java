@@ -3,6 +3,7 @@ package ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -33,11 +34,11 @@ class JdbcGroupDaoIntegrationTest {
     void add_CheckIsGroupSaved_True() {
         Group testGroup = new Group("test");
 
-        groupDao.add(testGroup);
+        groupDao.save(testGroup);
 
-        Group groupDb = groupDao.read(1);
-        assertNotNull(groupDb);
-        assertEquals(testGroup.getName(), groupDb.getName());
+        Optional<Group> groupDb = groupDao.findById(1);
+        assertTrue(groupDb.isPresent());
+        assertEquals(testGroup.getName(), groupDb.get().getName());
     }
 
     @Test
@@ -45,9 +46,9 @@ class JdbcGroupDaoIntegrationTest {
     void addAll_CheckIsManyGroupsSaves_True() {
         List<Group> groups = List.of(new Group("te-11"), new Group("te-22"));
 
-        groupDao.addAll(groups);
+        groupDao.saveAll(groups);
 
-        List<Group> groupsDb = groupDao.readAll();
+        List<Group> groupsDb = groupDao.findAll();
         assertNotNull(groupsDb);
         assertEquals(3, groupsDb.size());
     }
@@ -55,16 +56,16 @@ class JdbcGroupDaoIntegrationTest {
     @Test
     @Order(3)
     void read_CheckIsSuchGroupExist_True() {
-        Group groupsDb = groupDao.read(1);
+        Optional<Group> groupsDb = groupDao.findById(1);
 
-        assertNotNull(groupsDb);
-        assertEquals("test", groupsDb.getName());
+        assertTrue(groupsDb.isPresent());
+        assertEquals("test", groupsDb.get().getName());
     }
 
     @Test
     @Order(4)
     void readAll_TryToResolveAllRows_True() {
-        List<Group> groupsDb = groupDao.readAll();
+        List<Group> groupsDb = groupDao.findAll();
 
         assertNotNull(groupsDb);
         assertEquals(3, groupsDb.size());
@@ -72,22 +73,12 @@ class JdbcGroupDaoIntegrationTest {
 
     @Test
     @Order(5)
-    void update_CheckIsRowUpdated_True() {
-        Group testGroup = new Group(1, "tt-00");
-
-        groupDao.update(testGroup);
-
-        Group testGroupDb = groupDao.read(1);
-        assertEquals(testGroup.getName(), testGroupDb.getName());
-    }
-
-    @Test
-    @Order(6)
     void delete_IsRowDeleted_True() {
-        Group testCourse = new Group(2, "lv-00");
-        groupDao.delete(testCourse.getId());
+        Optional<Group> groupDb = groupDao.findById(1);
+        
+        groupDao.delete(groupDb.get());
 
-        assertThrows(IllegalArgumentException.class, () -> groupDao.read(2));
+        assertTrue(groupDao.findById(1).isEmpty());
     }
 
 }

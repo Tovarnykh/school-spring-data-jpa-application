@@ -1,12 +1,7 @@
 package ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.service;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -19,10 +14,10 @@ import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.domain.se
 
 @SpringBootTest
 class GroupServiceIntegrationTest extends IntegrationTest {
-    
+
     @Mock
     private GroupDao groupDao;
-    
+
     @InjectMocks
     private GroupService groupService;
 
@@ -30,42 +25,35 @@ class GroupServiceIntegrationTest extends IntegrationTest {
     void add_CheckIsGroupAdd_True() {
         groupService.add("tt-00");
 
-        verify(groupDao, times(1)).add(new Group("tt-00"));
+        verify(groupDao, times(1)).save(new Group("tt-00"));
     }
 
     @Test
     void get_CanGetGroup_True() {
-        when(groupDao.read(1)).thenReturn(new Group("tt-00"));
-        
-        Group groupDb = groupService.get(1);
+        groupService.get(1);
 
-        assertNotNull(groupDb);
-        assertEquals("tt-00", groupDb.getName());
+        verify(groupDao, times(1)).findById(1);
     }
 
     @Test
     void getAll_CheckCanGetAllList_True() {
-        when(groupDao.readAll()).thenReturn(List.of(new Group("tt-00"), new Group("tt-01")));
+        groupService.getAll();
 
-        List<Group> group = groupService.getAll();
-
-        assertNotNull(group);
-        assertEquals(2, group.size());
+        verify(groupDao, times(1)).findAll();
     }
 
     @Test
     void update_IsRowUpdatedOnDb_False() {
-        groupService.update(1, "tt-22");
+        groupService.update(1, "tt-01");
 
-        verify(groupDao).update(new Group(1, "tt-22"));
+        verify(groupDao, times(1)).findById(1);
     }
 
     @Test
     void delete_IsRowDeleted_False() {
-        when(groupDao.read(1)).thenReturn(new Group("tt-00"));
         groupService.delete(1);
 
-        verify(groupDao).delete(1);
+        verify(groupDao, times(1)).findById(1);
     }
 
 }

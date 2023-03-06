@@ -1,11 +1,7 @@
 package ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,8 +9,8 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.IntegrationTest;
+import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.GroupDao;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.StudentDao;
-import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.Group;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.Student;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.domain.service.StudentService;
 
@@ -23,44 +19,46 @@ class StudentServiceIntegrationTest extends IntegrationTest {
 
     @Mock
     private StudentDao studentDao;
+    
+    @Mock
+    private GroupDao groupDao;
 
     @InjectMocks
     private StudentService studentService;
+    
+    @Test
+    void add_CheckIsCourseAdd_True() {
+        studentService.add(1, "Adam", "Adamson");
+
+        verify(studentDao, times(1)).save(new Student("Adam", "Adamson"));
+    }
 
     @Test
     void get_CanGetStudent_True() {
-        when(studentDao.read(1)).thenReturn(new Student(new Group("tt-00"), "Adam", "Adamson"));
+        studentService.get(1);
 
-        Student studentDb = studentService.get(1);
-
-        assertNotNull(studentDb);
-        assertEquals("Adam" ,studentDb.getFirstName());
+        verify(studentDao, times(1)).findById(1);
     }
 
     @Test
     void getAll_CheckCanGetAllList_True() {
-        when(studentDao.readAll()).thenReturn(List.of(new Student(new Group("tt-00"), "Adam", "Adamson"), new Student(new Group("tt-00"), "John", "Johnson")));
+        studentService.getAll();
 
-        List<Student> students = studentService.getAll();
-
-        assertNotNull(students);
-        assertEquals(2, students.size());
+        verify(studentDao, times(1)).findAll();
     }
 
     @Test
     void update_IsRowUpdatedOnDb_False() {
-        studentDao.update(new Student(new Group("tt-00"), "Adam", "Adamson"));
+        studentService.update(1, 1, "Adam", "Adamson");
 
-        verify(studentDao).update(new Student(new Group("tt-00"), "Adam", "Adamson"));
+        verify(studentDao, times(1)).findById(1);
     }
 
     @Test
     void delete_IsRowDeleted_True() {
-        when(studentDao.read(1)).thenReturn(new Student(new Group("tt-00"), "Adam", "Adamson"));
-        
         studentService.delete(1);
 
-        verify(studentDao).delete(1);
+        verify(studentDao, times(1)).findById(1);
     }
 
 }

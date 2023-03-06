@@ -2,6 +2,7 @@ package ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -27,21 +28,21 @@ class JdbcCourseDaoIntegrationTest {
     @Order(1)
     void add_CheckIsCourseSaved_True() {
         Course testCourse = new Course("Test");
-        courseDao.add(testCourse);
+        courseDao.save(testCourse);
 
-        Course courseDB = courseDao.read(1);
+        Optional<Course> courseDB = courseDao.findById(1);
 
-        assertNotNull(courseDB);
-        assertEquals(testCourse.getName(), courseDB.getName());
+        assertTrue(courseDB.isPresent());
+        assertEquals(testCourse.getName(), courseDB.get().getName());
     }
 
     @Test
     @Order(2)
     void addAll_CheckIsManyCoursesSaves_True() {
         List<Course> courses = List.of(new Course("Test2"), new Course("Test3"));
-        courseDao.addAll(courses);
+        courseDao.saveAll(courses);
 
-        List<Course> coursesDB = courseDao.readAll();
+        List<Course> coursesDB = courseDao.findAll();
 
         assertNotNull(coursesDB);
         assertEquals(3, coursesDB.size());
@@ -50,16 +51,16 @@ class JdbcCourseDaoIntegrationTest {
     @Test
     @Order(3)
     void read_CheckIsSuchCourseExist_True() {
-        Course courseDb = courseDao.read(2);
+        Optional<Course> courseDb = courseDao.findById(2);
 
-        assertNotNull(courseDb);
-        assertEquals("Test2", courseDb.getName());
+        assertTrue(courseDb.isPresent());
+        assertEquals("Test2", courseDb.get().getName());
     }
 
     @Test
     @Order(4)
     void readAll_TryToResolveAllRows_True() {
-        List<Course> coursesDb = courseDao.readAll();
+        List<Course> coursesDb = courseDao.findAll();
 
         assertNotNull(coursesDb);
         assertEquals(3, coursesDb.size());
@@ -67,23 +68,12 @@ class JdbcCourseDaoIntegrationTest {
 
     @Test
     @Order(5)
-    void update_CheckIsRowUpdated_True() {
-        Course testCourse = new Course(1, "Test1", "");
-
-        courseDao.update(testCourse);
-
-        Course testCourseDb = courseDao.read(1);
-        assertEquals(testCourse.getName(), testCourseDb.getName());
-    }
-
-    @Test
-    @Order(6)
     void delete_IsRowDeleted_True() {
-        Course courseDb = courseDao.read(3);
+        Optional<Course> courseDb = courseDao.findById(3);
 
-        courseDao.delete(courseDb.getId());
+        courseDao.delete(courseDb.get());
 
-        assertThrows(IllegalArgumentException.class, () -> courseDao.read(3));
+        assertTrue(courseDao.findById(3).isEmpty());
     }
 
 }

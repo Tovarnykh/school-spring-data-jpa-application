@@ -1,0 +1,20 @@
+version: '3.1'
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: fox
+      POSTGRES_PASSWORD: foxminded
+      POSTGRES_DB: school
+    volumes:
+      - db-data:/var/lib/postgresql/data
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+volumes:
+  db-data:

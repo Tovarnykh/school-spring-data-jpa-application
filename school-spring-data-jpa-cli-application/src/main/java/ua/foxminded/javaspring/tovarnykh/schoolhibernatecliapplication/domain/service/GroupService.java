@@ -1,12 +1,12 @@
 package ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.domain.service;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import jakarta.persistence.EntityExistsException;
+import jakarta.transaction.Transactional;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.GroupDao;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.Group;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.domain.generator.Generator;
@@ -14,9 +14,6 @@ import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.domain.ge
 @Service
 public class GroupService {
 
-    private static final String MESSAGE_POPULATE_EXCEPTION = "Error: Problem with populating groups";
-    private static final String MESSAGE_GET_EXCEPTION = "Error: Problem with receiving group";
-    private static final String MESSAGE_ADD_EXCEPTION = "Error: Problem with adding group";
     private static final String MESSAGE_UPDATE_EXCEPTION = "Error: Problem with updating group";
     private static final String MESSAGE_DELETE_EXCEPTION = "Error: No such group to delete";
 
@@ -28,67 +25,65 @@ public class GroupService {
         this.generator = generator;
     }
 
+    @Transactional
     public void generateData() {
-        try {
-            List<Group> students = generator.generate();
-            groupDao.addAll(students);
-        } catch (EntityExistsException | IllegalArgumentException e) {
-            System.out.println(MESSAGE_POPULATE_EXCEPTION);
-        }
+        List<Group> groups = generator.generate();
+        groupDao.saveAll(groups);
     }
 
     public void add(String name) {
-        try {
-            groupDao.add(new Group(name));
-        } catch (DataIntegrityViolationException e) {
-            System.out.println(MESSAGE_ADD_EXCEPTION);
-        }
+        groupDao.save(new Group(name));
     }
 
     public Group get(int groupId) {
-        try {
-            return groupDao.read(groupId);
-        } catch (IllegalArgumentException e) {
-            System.out.println(MESSAGE_GET_EXCEPTION);
-            return new Group();
+        Optional<Group> groupDb = groupDao.findById(groupId);
+
+        if (groupDb.isEmpty()) {
+            return new Group("No Data");
         }
+
+        return groupDb.get();
     }
 
     public List<Group> getAll() {
-        try {
-            return groupDao.readAll();
-        } catch (EmptyResultDataAccessException e) {
-            System.out.println(MESSAGE_GET_EXCEPTION);
-            return List.of();
-        }
+        return groupDao.findAll();
     }
 
     public void update(int groupId, String name) {
         try {
-            groupDao.update(new Group(groupId, name));
-        } catch (DataIntegrityViolationException e) {
+            Optional<Group> groupDb = groupDao.findById(groupId);
+
+            if (groupDb.isEmpty()) {
+                throw new IllegalArgumentException();
+            }
+
+            Group group = groupDb.get();
+
+            group.setName(name);
+            groupDao.save(group);
+        } catch (IllegalArgumentException e) {
             System.out.println(MESSAGE_UPDATE_EXCEPTION);
         }
     }
 
     public void delete(int groupId) {
         try {
-            groupDao.delete(groupId);
-        } catch (EmptyResultDataAccessException e) {
+            Optional<Group> groupDb = groupDao.findById(groupId);
+
+            if (groupDb.isEmpty()) {
+                throw new IllegalArgumentException();
+            }
+
+            groupDao.delete(groupDb.get());
+        } catch (IllegalArgumentException e) {
             System.out.println(MESSAGE_DELETE_EXCEPTION);
         }
     }
 
     public List<Group> getGroupsWithLessStudents(int numberOfStudents) {
-        try {
-            return groupDao.readAllWithAssignedStudents().stream()
-                    .filter(group -> group.getStudents()
-                            .size() <= numberOfStudents)
-                    .toList();
-        } catch (EmptyResultDataAccessException e) {
-            System.out.println(MESSAGE_GET_EXCEPTION);
-            return List.of();
-        }
+        return groupDao.findAll().stream()
+                .filter(group -> group.getStudents().size() <= numberOfStudents)
+                .toList();
     }
-    
+
 }

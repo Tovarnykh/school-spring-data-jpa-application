@@ -1,21 +1,12 @@
 package ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao;
 
-import java.util.List;
+import java.util.Optional;
 
-import org.springframework.dao.EmptyResultDataAccessException;
-
+import org.springframework.data.jpa.repository.JpaRepository;
 import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.Course;
-import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.dao.entity.Student;
-import ua.foxminded.javaspring.tovarnykh.schoolhibernatecliapplication.domain.pojo.StudentCourse;
 
-public interface CourseDao extends Dao<Course> {
-
-    List<Course> readAllWithAssignedStudents() throws EmptyResultDataAccessException;
+public interface CourseDao extends JpaRepository<Course, Integer> {
     
-    void enrollStudent(Student student, Course course) throws IllegalArgumentException;
-
-    void enrollAll(List<StudentCourse> students) throws IllegalArgumentException;
+    Optional<Course> findByName(String name);
     
-    void expelStudent(Student student, Course course) throws IllegalArgumentException;
-
 }

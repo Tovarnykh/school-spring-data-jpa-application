@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.3</version>
+        <version>3.0.4</version>
         <relativePath />
     </parent>
     <groupId>ua.foxminded.javaspring.tovarnykh</groupId>
-    <artifactId>school-hibernate-cli-application</artifactId>
-    <name>School Hibernate CLI Application</name>
-    <description>School CRUD project with Hibernate</description>
+    <artifactId>school-spring-data-jpa-cli-application</artifactId>
+    <name>School Spring Data JPA CLI Application</name>
+    <description>School CRUD project with Spring Data JPA</description>
     <properties>
         <java.version>17</java.version>
         <testcontainers.version>1.17.6</testcontainers.version>

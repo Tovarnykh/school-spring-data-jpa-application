@@ -2,19 +2,22 @@ version: '3.1'
 services:
   db:
     image: postgres
+    container_name: database
     ports:
       - "5432:5432"
     environment:
       POSTGRES_USER: fox
       POSTGRES_PASSWORD: foxminded
       POSTGRES_DB: school
-    volumes:
-      - db-data:/var/lib/postgresql/data
   app:
     build: .
+    container_name: school-spring-data-jpa-cli-application
+    tty: true
     ports:
       - "8080:8080"
     depends_on:
       - db
-volumes:
-  db-data:
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/school
+      SPRING_DATASOURCE_USERNAME: fox
+      SPRING_DATASOURCE_PASSWORD: foxminded

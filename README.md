@@ -18,9 +18,9 @@ According to the program, the developing of this application is consisted of sev
 ### How To Run
 
 0. Stop existing pgsql process in services;
-1. Run **BASH** command to create database *docker run --name school -e POSTGRES_USER=fox -e POSTGRES_PASSWORD=foxminded -e POSTGRES_DB=school -p 5432:5432 -d postgres*;
-2. Compile applications using this command: './mvnw package'
-3. Launch application 'java -jar school-jdbc-api.jar'
+1. Run command *docker compose up -d*;
+2. Recieve a control to system input to docker *docker attach school-app*
+3. Enjoy
 
 ## Application components
 

@@ -2,7 +2,7 @@ version: '3.1'
 services:
   db:
     image: postgres
-    container_name: database
+    container_name: school_db
     ports:
       - "5432:5432"
     environment:
@@ -10,14 +10,11 @@ services:
       POSTGRES_PASSWORD: foxminded
       POSTGRES_DB: school
   app:
-    build: .
-    container_name: school-spring-data-jpa-cli-application
-    tty: true
-    ports:
-      - "8080:8080"
+    container_name: school_app
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - db
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/school
-      SPRING_DATASOURCE_USERNAME: fox
-      SPRING_DATASOURCE_PASSWORD: foxminded
+    tty: true
+    stdin_open: true
